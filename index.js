@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const FormData = require('form-data');
 
 const s3 = new AWS.S3({
     accessKeyId: "NOPE",
@@ -7,10 +8,16 @@ const s3 = new AWS.S3({
 });
 
 exports.handler = (event) => {
+    const myData = new FormData(event.body);
+    console.log("myData: " + JSON.stringify(myData));
+    //console.log("EVENT1: ", );
+    //let args = event;
+    let name = myData.get('fileKey');
+    let file = myData.get('file');
+    console.log(name)
+    console.log(file)
 
-    let args = event.body;
-    let name = args.name;
-    let file = args.file;
+    console.log(myData)
 
     var params = {
         Bucket: 'mycloudproject1',

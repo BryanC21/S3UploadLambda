@@ -1,3 +1,4 @@
 node_modules/
 else.js
 .DS_Store
+*.zip
