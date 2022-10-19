@@ -1,53 +1,20 @@
-const AWS = require('aws-sdk');
-const FormData = require('form-data');
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
 
-const s3 = new AWS.S3({
-    accessKeyId: "NOPE",
-    secretAccessKey: 'NOPE',
-    useAccelerateEndpoint: true,
-});
-
-exports.handler = (event) => {
-    const myData = new FormData(event.body);
-    console.log("myData: " + JSON.stringify(myData));
-    //console.log("EVENT1: ", );
-    //let args = event;
-    let name = myData.get('fileKey');
-    let file = myData.get('file');
-    console.log(name)
-    console.log(file)
-
-    console.log(myData)
-
-    var params = {
-        Bucket: 'mycloudproject1',
-        Key: name,
-        Body: file,
+exports.handler = async (event) => {
+    
+    const newID = makeid(3) +"-"+ event.queryStringParameters.name;
+    const response = {
+        statusCode: 200,
+        body: newID,
     };
-    console.log("Begin Upload");
-    s3.upload(params, function (s3Err, data) {
-        if (s3Err) {
-            console.log(s3Err);
-            const response = {
-                statusCode: 200,
-                body: {
-                    message: "Failed upload",
-                    data: s3Err
-                }
-            };
-            return response;
-        }
-        let message = `File uploaded successfully at ${data.Location}`;
-        const response = {
-            statusCode: 200,
-            body: {
-                message: "Success upload",
-                data: data
-            }
-        };
-        console.log(message);
-        return response;
-    });
+    return response;
 };
-
-//handler();
